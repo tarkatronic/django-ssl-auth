@@ -47,7 +47,7 @@ running and check that your https:// url loads your application and the
 This module
 -----------
 
-1. run setup.py (sudo python setup.py install) or install the latest release 
+1. run setup.py (sudo python setup.py install) or install the latest release
    using ``pip install django_ssl_auth``
 
 2. edit your ``settings.py``
@@ -68,7 +68,7 @@ There are two things you need to do in ``settings.py``
 2. To automatically create ``User``s for all valid certificate holders, set
    ``AUTOCREATE_VALID_SSL_USERS = True``. Auto-created users will be set to
    inactive by default, consider using the `User.is_active`_ field in your
-   `LOGIN_DIRECT_URL`_ view to notifying the user of their status.
+   `LOGIN_REDIRECT_URL`_ view to notifying the user of their status.
 
 For details, see ``testapp/ssltest/settings.py``
 

@@ -1,14 +1,37 @@
 sudo: false
 language: python
+cache: pip
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
+- '2.7'
+- '3.3'
+- '3.4'
+- '3.5'
+- '3.6'
 env:
-  - DJANGO="django>=1.8,<1.9"
-  - DJANGO="django>=1.9,<1.10"
-install:
-  - pip install "$DJANGO"
-  - pip install .
-  - pip install -r testapp/requirements.txt
-script: python -Wall testapp/manage.py test
+- DJANGO="1.8"
+- DJANGO="1.9"
+- DJANGO="1.10"
+- DJANGO="1.11"
+install: pip install tox-travis codecov
+script: tox
+after_success: coverage combine && codecov
+matrix:
+  fast_finish: true
+  include:
+  - python: 3.6
+    env: TOXENV=flake8
+branches:
+  only:
+  - master
+  - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
+deploy:
+  provider: pypi
+  user: jwilhelm
+  password:
+    secure: JqdgXsV63M+UcRP1Tvv/uJ04QbanW/IUD/VgczpsC6gvMPHAKGM4GE2yUI9c9PfE1CDYo1ivp/YXDxT7apiQKBbuf8CxWsVAlXwjXdTyGV5T0QVircqOg3jz/khjcUdVbJ47pVya3RLaYhfL0rEpD/6593G1q7++VbpHdkgZOrL75SRbSEoNjVRdLwN+JcFPpDxxTiFcXUqjOmj49MM5c0y+Y8cEkTqN9MXSk0HfM3aq8N5ljDjhwLEMCiNdxF8oteacf28AeIWWdkf9RvpQZIZgEue2pUyoW0nWehkvlAdPuiJ7c+pmkmzSRROeRiZY9UFWpy6ndvCWT0PjYyJMFlTGpzyQ5x6XTFy5HSJ68LNezLHzABCT9/RHis6asd8DJFzUFtSfIrmV4V98+KXUsur8sgy0Pti3gzKQjM7IYdcJwKUgx9wHhpE/v+GI0NnIRXbI99B81phZ1lVDqzv+wLgmifDf36JUkH/Kb4AMy56C6Id0O6GwYzvp97d2dg5nehvlQwt0b58FUcGdv1ndTpkN9k0LF550BnJyNZyFHVlBokewcZ+kP52dxU9uowJtC11ylwynaGLsc6kaQ8033/Mr6rY2uk7IwGs2Us1tyu8nP21bY9NyjVVCRzftH6kWop4AJguCWqLPY091k6YgmXGh12UC51CZMtjM/JHxRHE=
+  on:
+    tags: true
+    python: 3.6
+    condition: $TOXENV = flake8
+    distributions: sdist bdist_wheel
+    repo: tarkatronic/django-ssl-auth

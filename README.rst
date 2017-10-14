@@ -3,15 +3,15 @@ django-ssl-auth
 ===============
 
 .. image:: https://img.shields.io/pypi/v/django-ssl-auth.svg
-   :target: https://pypi.python.org/pypi/django-excel-response
+   :target: https://pypi.python.org/pypi/django-ssl-auth
    :alt: Latest Version
 
 .. image:: https://travis-ci.org/tarkatronic/django-ssl-auth.svg?branch=master
-   :target: https://travis-ci.org/tarkatronic/django-excel-response
+   :target: https://travis-ci.org/tarkatronic/django-ssl-auth
    :alt: Test/build status
 
 .. image:: https://codecov.io/gh/tarkatronic/django-ssl-auth/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/tarkatronic/django-excel-response
+   :target: https://codecov.io/gh/tarkatronic/django-ssl-auth
    :alt: Code coverage
 
 SSL authentication backend and middleware for Django for authenticating users

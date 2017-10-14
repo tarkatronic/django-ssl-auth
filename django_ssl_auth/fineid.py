@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright 2013 SSH Communication Security Corporation.
@@ -11,8 +10,10 @@ Utility functions for handling certificates on Finnish ID cards a.k.a.
 FINeID (www.fineid.fi)
 """
 
+
 def _dictify_dn(dn):
     return dict(x.split('=') for x in dn.split('/') if '=' in x)
+
 
 def user_dict_from_dn(dn):
     d = _dictify_dn(dn)

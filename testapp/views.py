@@ -1,6 +1,8 @@
 from pprint import pformat
+
 from django.http import HttpResponse
 from django.views.generic import View
+
 from django_ssl_auth.fineid import user_dict_from_dn
 
 
@@ -12,6 +14,7 @@ class Fineid(View):
             authentication_status=request.META['HTTP_X_SSL_AUTHENTICATED'],
             user=str(request.user))
         return HttpResponse(pformat(ctx), content_type="text/plain")
+
 
 class Test(View):
     def get(self, request, **kwargs):

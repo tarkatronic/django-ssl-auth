@@ -21,5 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-from .base import SSLClientAuthBackend, SSLClientAuthMiddleware
 from . import fineid
+from .base import SSLClientAuthBackend, SSLClientAuthMiddleware
+
+
+__all__ = ['fineid', 'SSLClientAuthBackend', 'SSLClientAuthMiddleware']

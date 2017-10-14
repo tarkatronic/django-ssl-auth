@@ -1,4 +1,3 @@
-  #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2013 SSH Communication Security Corporation.
@@ -23,46 +22,50 @@
 #
 
 import logging
+from importlib import import_module
+
+import django
 from django.conf import settings
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate, backends, get_user_model, login
 from django.core.exceptions import ImproperlyConfigured
+from django.http import HttpResponseRedirect
+from django.shortcuts import resolve_url
+
 
 try:
     from django.utils.deprecation import MiddlewareMixin  # Django 1.10+
 except ImportError:
     MiddlewareMixin = object  # Django < 1.10
-from django.http import HttpResponseRedirect
-from django.shortcuts import resolve_url
-from importlib import import_module
 
-try:
-    from django.contrib.auth import get_user_model
-
-    User = get_user_model()
-except ImportError:
-    from django.contrib.auth.models import User
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-class SSLClientAuthBackend(object):
+User = get_user_model()
+
+
+def check_user_auth(user):
+    if django.VERSION < (1, 10):
+        return user.is_authenticated()
+    else:
+        return user.is_authenticated
+
+
+class SSLClientAuthBackend(backends.ModelBackend):
     @staticmethod
     def authenticate(request=None):
         _module_name, _function_name = settings.USER_DATA_FN.rsplit('.', 1)
         _module = import_module(_module_name)  # We need a non-empty fromlist
-        USER_DATA_FN = getattr(_module, _function_name)
+        USER_DATA_FN = getattr(_module, _function_name)  # NOQA: N806
 
         if not request.is_secure():
             logger.debug("insecure request")
             return None
-        authentication_status = request.META.get('HTTP_X_SSL_AUTHENTICATED',
-                                                 None)
-        if (authentication_status != "SUCCESS" or
-                    'HTTP_X_SSL_USER_DN' not in request.META):
+        authentication_status = request.META.get('HTTP_X_SSL_AUTHENTICATED', None)
+        if (authentication_status != "SUCCESS" or 'HTTP_X_SSL_USER_DN' not in request.META):
             logger.warn(
-                "HTTP_X_SSL_AUTHENTICATED marked failed or "
-                "HTTP_X_SSL_USER_DN "
-                "header missing")
+                "HTTP_X_SSL_AUTHENTICATED marked failed or HTTP_X_SSL_USER_DN header missing"
+            )
             return None
         dn = request.META.get('HTTP_X_SSL_USER_DN')
         user_data = USER_DATA_FN(dn)
@@ -76,8 +79,7 @@ class SSLClientAuthBackend(object):
                 user.save()
             else:
                 return None
-        logger.info("user {0} authenticated using a certificate issued to "
-                    "{1}".format(username, dn))
+        logger.info("user {0} authenticated using a certificate issued to {1}".format(username, dn))
         return user
 
     def get_user(self, user_id):
@@ -91,19 +93,18 @@ class SSLClientAuthMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if not hasattr(request, 'user'):
             raise ImproperlyConfigured()
-        if request.user.is_authenticated():
+        if check_user_auth(request.user):
             return
         if int(request.META.get('HTTP_X_REST_API', 0)):
             user = authenticate(request=request)
-            if user is None or not user.is_authenticated():
+            if user is None or not check_user_auth(user):
                 return
             logger.debug("REST API call, not logging user in")
             request.user = user
         elif request.path_info == settings.LOGIN_URL:
             user = authenticate(request=request)
-            if user is None or not user.is_authenticated():
+            if user is None or not check_user_auth(user):
                 return
             logger.info("Logging user in")
             login(request, user)
             return HttpResponseRedirect(resolve_url(settings.LOGIN_REDIRECT_URL))
-

@@ -48,10 +48,12 @@ This module
 -----------
 
 1. run setup.py (sudo python setup.py install) or install the latest release 
-  using ``pip install django_ssl_auth``
+   using ``pip install django_ssl_auth``
+
 2. edit your ``settings.py``
-  1. add ``"django_ssl_auth.SSLClientAuthMiddleware"`` to your ``MIDDLEWARE_CLASSES``
-  2. add ``"django_ssl_auth.SSLClientAuthBackend"`` to your ``AUTHENTICATION_BACKENDS``
+
+   1. add ``"django_ssl_auth.SSLClientAuthMiddleware"`` to your ``MIDDLEWARE_CLASSES``
+   2. add ``"django_ssl_auth.SSLClientAuthBackend"`` to your ``AUTHENTICATION_BACKENDS``
 
 Configuration
 ~~~~~~~~~~~~~

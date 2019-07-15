@@ -69,6 +69,8 @@ There are two things you need to do in ``settings.py``
    ``AUTOCREATE_VALID_SSL_USERS = True``. Auto-created users will be set to
    inactive by default, consider using the `User.is_active`_ field in your
    `LOGIN_REDIRECT_URL`_ view to notifying the user of their status.
+3. If you want to use the standard login url, set `SSLCLIENT_LOGIN_URL = None`.
+   For cases where you want a seperate login URL for SSL auth, set `SSLCLIENT_LOGIN_URL = "/smartlogin/"`.
 
 For details, see ``testapp/ssltest/settings.py``
 

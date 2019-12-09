@@ -3,8 +3,6 @@ language: python
 cache: pip
 python:
 - 2.7
-- 3.3
-- 3.4
 - 3.5
 - 3.6
 env:
@@ -14,12 +12,6 @@ env:
 - DJANGO=1.11
 matrix:
   exclude:
-  - python: 3.3
-    env: DJANGO=1.9
-  - python: 3.3
-    env: DJANGO=1.10
-  - python: 3.3
-    env: DJANGO=1.11
   - python: 3.6
     env: DJANGO=1.8
   - python: 3.6

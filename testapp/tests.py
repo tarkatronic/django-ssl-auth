@@ -25,7 +25,7 @@ class Tests(TestCase):
     def test_login_new_user_sslurl(self):
         """Ensure users are automatically created."""
         # Simulate an SSL connection (of a new user)
-        with self.settings(SSLCLIENT_LOGIN_URL = "/pivlogin"):
+        with self.settings(SSLCLIENT_LOGIN_URL="/pivlogin"):
             self.client.get(
                 settings.SSLCLIENT_LOGIN_URL,
                 HTTP_X_SSL_AUTHENTICATED='SUCCESS',

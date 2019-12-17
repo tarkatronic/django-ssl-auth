@@ -101,7 +101,8 @@ class SSLClientAuthMiddleware(MiddlewareMixin):
                 return
             logger.debug("REST API call, not logging user in")
             request.user = user
-        elif request.path_info == settings.LOGIN_URL:
+        elif request.path_info == settings.LOGIN_URL or \
+                (hasattr(settings, 'SSLCLIENT_LOGIN_URL') and request.path_info == settings.SSLCLIENT_LOGIN_URL):
             user = authenticate(request=request)
             if user is None or not check_user_auth(user):
                 return

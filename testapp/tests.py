@@ -43,7 +43,7 @@ class Tests(TestCase):
         """Ensure users are automatically created."""
         # Simulate an SSL connection (of a new user)
         with self.settings(SSLCLIENT_ALLOW_INSECURE_REQUEST=True):
-            result = self.client.get(
+            self.client.get(
                 settings.LOGIN_URL,
                 HTTP_X_SSL_AUTHENTICATED='SUCCESS',
                 HTTP_X_SSL_USER_DN='C=FI/serialNumber=42/GN=John/SN=Smith/CN=John Smith',

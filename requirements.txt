@@ -1,5 +1,5 @@
 -r requirements-test.txt
-Django==1.11.23
+Django==1.11.28
 py==1.4.34
 six==1.11.0
 tox

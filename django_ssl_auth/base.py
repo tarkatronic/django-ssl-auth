@@ -58,7 +58,8 @@ class SSLClientAuthBackend(backends.ModelBackend):
         _module = import_module(_module_name)  # We need a non-empty fromlist
         USER_DATA_FN = getattr(_module, _function_name)  # NOQA: N806
 
-        if not request.is_secure():
+        allow_insecure_request = getattr(settings, "SSLCLIENT_ALLOW_INSECURE_REQUEST", False)
+        if not allow_insecure_request and not request.is_secure():
             logger.debug("insecure request")
             return None
         authentication_status = request.META.get('HTTP_X_SSL_AUTHENTICATED', None)

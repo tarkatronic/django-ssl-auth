@@ -38,3 +38,32 @@ class Tests(TestCase):
             self.assertEqual(user.username, '42')
             self.assertEqual(user.first_name, 'John')
             self.assertEqual(user.last_name, 'Smith')
+
+    def test_login_new_user_insecure(self):
+        """Ensure users are automatically created."""
+        # Simulate an SSL connection (of a new user)
+        with self.settings(SSLCLIENT_ALLOW_INSECURE_REQUEST=True):
+            self.client.get(
+                settings.LOGIN_URL,
+                HTTP_X_SSL_AUTHENTICATED='SUCCESS',
+                HTTP_X_SSL_USER_DN='C=FI/serialNumber=42/GN=John/SN=Smith/CN=John Smith',
+                HTTP_X_FORWARDED_PROTOCOL='http'
+            )
+
+        # Ensure the new user was created
+        user = User.objects.last()
+        self.assertEqual(user.username, '42')
+        self.assertEqual(user.first_name, 'John')
+        self.assertEqual(user.last_name, 'Smith')
+
+    def test_login_new_user_insecure_fail(self):
+        """Ensure users are automatically created."""
+        # Simulate an SSL connection (of a new user)
+        with self.settings(SSLCLIENT_ALLOW_INSECURE_REQUEST=False):
+            result = self.client.get(
+                settings.LOGIN_URL,
+                HTTP_X_SSL_AUTHENTICATED='SUCCESS',
+                HTTP_X_SSL_USER_DN='C=FI/serialNumber=42/GN=John/SN=Smith/CN=John Smith',
+                HTTP_X_FORWARDED_PROTOCOL='http'
+            )
+            self.assertEqual(result.status_code, 404)
